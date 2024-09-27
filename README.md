@@ -27,7 +27,7 @@ determining classification cervical vertebral maturation (CVM) by
 analyzing lateral cephalometric radiographs based on clinical
 research.
 
-### Environment setup
+# Environment setup
 * Pytorch >=1.11
 * CUDA Version: >=11.3
 * CUDNN version: >=8 
@@ -44,37 +44,39 @@ pip install ./requirements.txt
 ```
 export PYTHONPATH=/path/to/your/src/:$PYTHONPATH
 ```
-Example:
-```
-export PYTHONPATH=/path/to/your/src/:$PYTHONPATH
-```
 
-### 3. Data annotation and training
+# Data structure
 
 In this project, we use CVAT for annotating landmarks on cephalometric images.
 List of CVM landmarks, refer to `./data/points_labels_v2.py`
 The annotation from CVAT must be export in "CVAT for image 1.1"
-1. Structure of input image folder and its annotation in xml file as below :
+Structure of input image folder and its annotation in xml file as below :
 ```
 IBSI2015
-├── train
-│   ├── images
-│   │   ├── 001.jpeg
-│   │   ├── 002.jpeg
-│   │   ├── ...
-│   │   
-├── test
-│   ├── images
-│   │   ├── 280.jpeg
-│   │   ├── 281.jpeg
-│   │   ├── ...
-│   │   
-├── annotations.xml
+├──v1.0
+│    ├── original
+│    │   ├── images
+│    │   │   ├── 001.jpeg
+│    │   │   ├── 002.jpeg
+│    │   │   ├── ...
+│    ├── train
+│    │   ├── images
+│    │   │   ├── 001.jpeg
+│    │   │   ├── 002.jpeg
+│    │   │   ├── ...
+│    ├── test
+│    │   ├── images
+│    │   │   ├── 280.jpeg
+│    │   │   ├── 281.jpeg
+│    │   │   ├── ...
+│    ├── annotations.xml
 ```
 
-### 4. Configuration for model train and evaluation
-Modify file `./configs/configuration`
+# Training, eval and inference
 
+### 1. Configuration file
+
+Modify file `./configs/configuration`
 
 ```
     CVM_data_dir = ''   ##### input data dir
@@ -110,33 +112,58 @@ Modify file `./configs/configuration`
     save_weight_every_epoch = 5
 ```
 
-### 5. Train and evaluation
-1. Train and eval CVM_landmark models
+### 2. Train and eval landmark detection model
+1. Train, eval and inference with CVM_landmark models
+- Training:
 ```commandline
 python3 1.1.Train_CVM_landmarks.py
 ```
-or
+- Eval:
 ```commandline
 python3 1.2.Eval_CVM_landmarks.py
 ```
-Running inference with CVM_landmark models
+- Inference:
 ```commandline
 python3 1.3.Inference_CVM_landmarks.py
 ```
-2. Train and eval CVM_classification model
+2. Train, eval and inference with CVM_classification model
+- Training:
 ```commandline
 python3 2.1.Train_CVM_classification_with_catboost_from_running_model.py
 ```
-or
+- Eval:
 ```commandline
 python3 2.2.Eval_CVM_classification_with_catboost.py
 ```
-3. Run inference with fully CVM assessment
+- Run inference with fully CVM assessment: 
 ```commandline
 python3 3.Inference_fully_CVM_assessment.py
 ```
 # Results
-#### Here are some output results of the proposal method:
+### Evaluation result of CVM landmark detection model
+| Point names | <=20       | <=25       | <=30       | <=40       | mean_err     |
+|-------------|------------|------------|------------|------------|--------------|
+| C2a         | 1          | 1          | 1          | 1          | 5.966511945  |
+| C2m         | 0.9875     | 1          | 1          | 1          | 6.750825191  |
+| C2p         | 1          | 1          | 1          | 1          | 7.637979231  |
+| C3ua        | 1          | 1          | 1          | 1          | 6.950127005  |
+| C3up        | 1          | 1          | 1          | 1          | 7.601827243  |
+| C3la        | 1          | 1          | 1          | 1          | 5.300641201  |
+| C3m         | 0.9875     | 1          | 1          | 1          | 7.812874372  |
+| C3lp        | 1          | 1          | 1          | 1          | 8.096231359  |
+| C4ua        | 1          | 1          | 1          | 1          | 5.325944899  |
+| C4up        | 0.9875     | 1          | 1          | 1          | 6.713858634  |
+| C4la        | 1          | 1          | 1          | 1          | 6.131789701  |
+| C4m         | 0.9625     | 0.9625     | 0.975      | 1          | 8.272726281  |
+| C4lp        | 1          | 1          | 1          | 1          | 6.248931617  |
+| AVERAGE     | 0.994230769| 0.997115385| 0.998076923| 1          |              |
+### Evaluation result of CVM classification model
+<div style="display: flex; justify-content: space-between;">
+    <img src="result/Best_model_confusion_matrix.png" height="400" width="500"/>
+    <img src="result/Best_model_Normalized_confusion_matrix.png" height="400" width="500"/>
+</div>
+
+### Here are some inference results:
 - Green landmark: Ground truth
 - Red landmark: Prediction
 
@@ -147,20 +174,13 @@ python3 3.Inference_fully_CVM_assessment.py
     <img src="result/019.jpeg" height="300" width="300"/>
 </div>
 
-#### Here are some output results of the proposal method after cropped
+### Here are some inference results after cropping
 
 <div style="display: flex; justify-content: space-between;">
     <img src="result/001_cropped.jpeg" height="300" width="300"/>
     <img src="result/007_cropped.jpeg" height="300" width="300"/>
     <img src="result/018_cropped.jpeg" height="300" width="300"/>
     <img src="result/019_cropped.jpeg" height="300" width="300"/>
-</div>
-
-#### Evaluation result of fully CVM assessment with catboot (on test set)
-
-<div style="display: flex; justify-content: space-between;">
-    <img src="result/Best_model_confusion_matrix.png" height="600" width="600"/>
-    <img src="result/Best_model_Normalized_confusion_matrix.png" height="600" width="600"/>
 </div>
 
 # Reference
