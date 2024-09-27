@@ -28,53 +28,16 @@ analyzing lateral cephalometric radiographs based on clinical
 research.
 
 ### Environment setup
-* Pytorch 1.11
-* CUDA Version: 11.3
-* CUDNN version: 8 
-* OS: Ubuntu 20.04
-* Python3 version: 3.8.10
+* Pytorch >=1.11
+* CUDA Version: >=11.3
+* CUDNN version: >=8 
+* OS: Ubuntu >=20.04
+* Python3 version: >=3.8.10
 
-#### Pull NVIDIA docker image and create docker container
-##### Install docker
-https://docs.nvidia.com/ai-enterprise/deployment-guide/dg-docker.html
-##### Pull NVIDIA docker CUDA 11.3 CuDNN 8
-```bash
-docker pull docker pull nvidia/cuda:11.3.0-cudnn8-devel-ubuntu20.04
-```
-##### Create new docker container from docker images
-```bash
-cd ~
-docker run --gpus all \
-	--shm-size=32.0g \
-	-v <path to source code on host machine>:/home/Viceph/src/ \
-	-v <path to data repo on host machine>:/home/Viceph/data/ \
-	--name <name of docker container> \
-	-it <pulled docker image ID>
-```
+#### Install dependencies
 
-##### Start docker container
-```
-docker start <name of docker container we just created> 
-docker attach <name of docker container we just created> 
-```
-
-### 2. Install dependencies
-#### Install python packages
-```bash
-apt install python3.8
-apt install python3-pip
-apt install nano
-apt install default-jre
-apt install openjdk-8-jdk-headless
-pip3 install --upgrade pip
-pip3 install opencv-python
-pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
-pip3 install tensorboard
-pip3 install yaml
-pip3 install tqdm 
-pip3 install xlwt
-pip3 install pyyaml
-pip3 install -U albumentations
+```commandline
+pip install ./requirements.txt
 ```
 
 ##### Setup environment variables to source code 
